@@ -39,7 +39,6 @@ function parseHistory(history) {
 	});
 
 	result.push({historyIndex: history.length - 1, passage, varChanges});
-	console.log('Parsed', history, result);
 	return result;
 }
 

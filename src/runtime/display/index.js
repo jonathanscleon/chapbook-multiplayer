@@ -98,6 +98,17 @@ const updateDom = coalesceCalls(function update(calls) {
 	});
 });
 
+const updateStory = coalesceCalls(function update(calls) {
+	if (calls.some(c => c[0])) {
+		const trail = get('trail');
+		const passage = passageNamed(trail[trail.length - 1]);
+
+		if (passage) {
+			render(passage.source);
+		}
+	}
+});
+
 export function init() {
 	initCrash();
 	initWarnings();
@@ -112,6 +123,7 @@ export function init() {
 		});
 	});
 
+	// event.on('state-change', ({name, isFromPeers}) => isFromPeers ? updateStory() : updateDom(name === 'trail'));
 	event.on('state-change', ({name}) => updateDom(name === 'trail'));
 
 	/*

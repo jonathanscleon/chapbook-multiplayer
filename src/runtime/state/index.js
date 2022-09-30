@@ -183,14 +183,14 @@ Sets a state variable, triggering a `state-change` event if it is changing a
 previous value.
 */
 
-export function set(name, value) {
+export function set(name, value, isFromPeers = false) {
 	const previous = get(name);
 
 	deepSet(vars, name, value);
 	addStateProxy(window, name);
 
 	if (value !== previous) {
-		event.emit('state-change', {name, previous, value});
+		event.emit('state-change', {name, previous, value, isFromPeers});
 	}
 
 	if (get('config.state.autosave')) {

@@ -2,6 +2,7 @@
 room: ''
 hasCloak: true
 config.header.center: '{room}'
+$numCloaksHanging: 0
 --
 [align center]
 # Cloak of Darkness
@@ -54,14 +55,18 @@ The exit is a door to the [[east->Foyer]].
 :: Cloakroom Hook
 It's just a small brass hook, screwed to the wall.
 
+[if $numCloaksHanging > 1]
+There are {$numCloaksHanging} other cloaks hanging here.
+[if $numCloaksHanging === 1]
+There is one other cloak hanging on the hook.
 [if hasCloak]
 You could [[hang->hang cloak]] your [[cloak->Cloak]] here.
-
 [else]
 You could [[pick up your cloak and wear it]], if you like, or simply turn back to the [[cloak room->Cloakroom]].
 
 :: hang cloak
 hasCloak: false
+$numCloaksHanging: $numCloaksHanging + 1
 --
 {embed passage: 'Cloakroom'}
 

@@ -23,6 +23,18 @@ html
             .right
           article
           ul.warnings
+          article.connection-client
+            .connection-client_host
+              button#host-game(type="button")
+                | Host
+              button#join-game(type="button")
+                | Join
+            div#session-connection.connection-client_client
+              label#session-label(for="session-id")
+                | Session ID:
+              input#session-id(type="text")
+            #connection-status.connection-client_status
+              | Not Connected
           footer
             .left
             .center

@@ -11,6 +11,7 @@ import {init as initSound} from './sound';
 import initLookups from './state/lookups';
 import initDefaults from './state/defaults';
 import {init as initDisplay} from './display';
+import {init as initMultiplayer} from './multiplayer';
 import {
 	init as initStory,
 	loadFromData,
@@ -30,6 +31,7 @@ initLookups();
 initDisplay();
 initSound();
 initStory();
+initMultiplayer();
 
 /* If we are the micro build, backstage will be undefined by Webpack. */
 
