@@ -72,6 +72,7 @@ $numCloaksHanging: $numCloaksHanging + 1
 
 :: pick up your cloak and wear it
 hasCloak: true
+$numCloaksHanging: $numCloaksHanging - 1
 --
 {embed passage: 'Cloakroom'}
 
