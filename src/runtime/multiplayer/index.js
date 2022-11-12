@@ -1,12 +1,41 @@
 /* eslint-disable no-console */
-import event from '../event';
-import {set} from '../state';
 import {Peer} from 'peerjs';
+import event from '../event';
+import {set, setLookup} from '../state';
 import logger from '../logger';
 
 const {log} = logger('multiplayer');
 
+const sessionData = {
+	get id() {
+		return (
+			document.getElementById('session-id') &&
+			document.getElementById('session-id').value
+		);
+	},
+	set id(value) {
+		document.getElementById('session-id').value = value;
+	}
+};
+const peerData = {
+	id: undefined
+};
+
 export function init() {
+	setLookup('session.id', () => {
+		return sessionData.id;
+	});
+
+	setLookup('peer.id', () => {
+		return peerData.id;
+	});
+	setLookup('peer.isHost', () => {
+		return peerData.id === sessionData.id;
+	});
+	setLookup('peer.isGuest', () => {
+		return peerData.id !== sessionData.id;
+	});
+
 	document.addEventListener('DOMContentLoaded', () => {
 		sessionData.id = '';
 		document.getElementById('host-game').addEventListener('click', () => {
@@ -26,18 +55,6 @@ export function init() {
 	});
 }
 
-const sessionData = {
-	get id() {
-		return (
-			document.getElementById('session-id') &&
-			document.getElementById('session-id').value
-		);
-	},
-	set id(value) {
-		document.getElementById('session-id').value = value;
-	}
-};
-
 function setConnectionStatus(status) {
 	document.getElementById('connection-status').innerHTML = status;
 }
@@ -53,6 +70,7 @@ function hostGame() {
 	});
 	peer.on('open', id => {
 		sessionData.id = id;
+		peerData.id = id;
 		setConnectionStatus('Connected');
 	});
 	peer.on('connection', conn => {
@@ -70,6 +88,7 @@ function joinGame(sessionID) {
 		setConnectionStatus('Error');
 	});
 	peer.on('open', id => {
+		peerData.id = id;
 		setupConnection(peer.connect(sessionID));
 	});
 }

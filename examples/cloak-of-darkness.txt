@@ -20,6 +20,10 @@ room: 'Outside'
 --
 Hurrying through the rainswept November night, you're glad to see the bright lights of the [[Opera House->Foyer]]. It's surprising that there aren't more people about but, hey, what do you expect in a cheap demo game...?
 
+[cont'd]
+Session Id: {session.id}
+
+Peer Id: {peer.id}
 
 :: Cloak
 A handsome cloak, of velvet trimmed with satin, and slightly spattered with raindrops. Its blackness is so deep that it almost seems to suck light from the room.
