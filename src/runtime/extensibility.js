@@ -6,6 +6,7 @@ global named `engine`.
 import event from './event';
 import {log, warn} from './logger';
 import createLoggers from './logger';
+import * as multiplayer from './multiplayer';
 import * as state from './state';
 import * as story from './story';
 import {render} from './template';
@@ -54,6 +55,7 @@ export default function init() {
 		},
 		event,
 		log,
+		multiplayer,
 		render,
 		state,
 		story,

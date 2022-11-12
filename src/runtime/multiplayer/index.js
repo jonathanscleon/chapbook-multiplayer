@@ -69,7 +69,7 @@ export function init() {
 	});
 }
 
-function hostGame() {
+export function hostGame() {
 	sessionData.status = 'Connecting...';
 	const peer = new Peer();
 
@@ -90,7 +90,7 @@ function hostGame() {
 
 }
 
-function joinGame(sessionID) {
+export function joinGame(sessionID) {
 	sessionData.status = 'Connecting...';
 	const peer = new Peer();
 
@@ -138,7 +138,7 @@ function setupConnection(connection) {
 }
 
 function refreshPassage() {
-	event.emit('state-change', {name: 'multiplayer-state', isFromPeers: true});
+	event.emit('refresh', {});
 }
 
 function shouldSyncState(name) {

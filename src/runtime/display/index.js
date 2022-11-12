@@ -123,6 +123,7 @@ export function init() {
 		});
 	});
 
+	event.on('refresh', () => updateStory(true));
 	event.on('state-change', ({isFromPeers}) => updateStory(isFromPeers));
 	event.on('state-change', ({name}) => updateDom(name === 'trail'));
 

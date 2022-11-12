@@ -5,28 +5,65 @@
 
 
 [align left]
-This is a multiplayer game.
-
-To **host** a game, press the button labeled `host` below.
-
-To **join** a game, ask your game host for the `session id`, and paste it into the input below, then press `join`.
-
-{embed passage: 'Lobby'}
+This is a multiplayer game. You'll need at least one other player to play. 
 
 [align center]
-**[[Begin->Coffee Shop]]**
+**[[Host a game->Lobby Hosting]]** | **[[Join a game->Lobby Joining 1]]**
 
 
-:: Lobby
+:: Lobby Joining 1
+sessionId: ''
 --
 
+Session ID:
+
+{text input for: 'sessionId'}
+
+[[Continue->Lobby Joining 2]]
+
+
+:: Lobby Joining 2
+--
+
+[JavaScript]
+if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
+  const sessionId = engine.state.get('sessionId')
+  engine.multiplayer.joinGame(sessionId)
+}
+
+
+[if multiplayer.session.status == 'Connecting...']
+Joining game...
+
+[if multiplayer.session.status == 'Error']
+There was an error attempting to join the game with session id: {sessionId}
+
+[[Try again?->Lobby Joining 1]]
+
+[if multiplayer.session.isConnected && multiplayer.peer.isGuest]
+**You have joined the game!**
+
+
+:: Lobby Hosting
+--
+
+[JavaScript]
+if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
+  engine.multiplayer.hostGame()
+}
+
+[cont'd]
+
+[if multiplayer.session.status == 'Connecting...']
+Setting up game...
+
 [if multiplayer.session.isConnected && multiplayer.peer.isHost]
-**You are the host.** Your game's session ID is {multiplayer.session.id}.
+**You are the host.** Your game's session ID is `{multiplayer.session.id}`.
 
 There are **{multiplayer.session.numConnections}** other players in the lobby.
 
-[if multiplayer.session.isConnected && multiplayer.peer.isGuest]
-**You have joined the game.**
+[if multiplayer.session.numConnections > 0]
+[[Start->Coffee Shop]]
 
 
 :: Coffee Shop
