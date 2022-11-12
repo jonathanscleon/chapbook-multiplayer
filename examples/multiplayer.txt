@@ -1,4 +1,5 @@
 :: Start
+$gameStarted: false
 --
 [align center]
 # Multiplayer
@@ -12,6 +13,7 @@ This is a multiplayer game. You'll need at least one other player to play.
 
 
 :: Lobby Joining 1
+config.header.right: '{multiplayer.session.status}'
 sessionId: ''
 --
 
@@ -19,7 +21,7 @@ Session ID:
 
 {text input for: 'sessionId'}
 
-[[Continue->Lobby Joining 2]]
+[[Continue->Lobby Joining 2]] | [[Go back->Start]]
 
 
 :: Lobby Joining 2
@@ -27,10 +29,12 @@ Session ID:
 
 [JavaScript]
 if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
-  const sessionId = engine.state.get('sessionId')
-  engine.multiplayer.joinGame(sessionId)
+  // Start joining the game, but wait for the cross-fade transition to finish
+  window.setTimeout(() => {
+    const sessionId = engine.state.get('sessionId')
+    engine.multiplayer.joinGame(sessionId)
+  }, 1000)
 }
-
 
 [if multiplayer.session.status == 'Connecting...']
 Joining game...
@@ -40,16 +44,24 @@ There was an error attempting to join the game with session id: {sessionId}
 
 [[Try again?->Lobby Joining 1]]
 
-[if multiplayer.session.isConnected && multiplayer.peer.isGuest]
-**You have joined the game!**
+[if multiplayer.session.isConnected && multiplayer.peer.isGuest && !$gameStarted]
+**You have joined the game!** Waiting for the host to begin...
+
+[if $gameStarted]
+{embed passage: 'Guest Start'}
 
 
 :: Lobby Hosting
+config.header.left: 'Hosting'
+config.header.right: '{multiplayer.session.status}'
 --
 
 [JavaScript]
 if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
-  engine.multiplayer.hostGame()
+  // Start hosting the game, but wait for the cross-fade transition to finish
+  window.setTimeout(() => {
+    engine.multiplayer.hostGame()
+  }, 1000)
 }
 
 [cont'd]
@@ -63,10 +75,22 @@ Setting up game...
 There are **{multiplayer.session.numConnections}** other players in the lobby.
 
 [if multiplayer.session.numConnections > 0]
-[[Start->Coffee Shop]]
+[[Start->Host Start]]
+
+
+:: Host Start
+$gameStarted: true
+--
+{embed passage: 'Coffee Shop'}
+
+
+:: Guest Start
+--
+{embed passage: 'Coffee Shop'}
 
 
 :: Coffee Shop
+$gameStarted: true
 --
 
 You are in a coffee shop
