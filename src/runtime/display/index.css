@@ -22,12 +22,12 @@
 	position: relative;
 }
 
-#page .story {
+#page article:not(.connection-client) {
 	flex-grow: 1;
 	display: flex;
 }
 
-#page .story > :first-child {
+#page article:not(.connection-client) > :first-child {
 	margin-top: 0;
 	width: 100%;
 }
