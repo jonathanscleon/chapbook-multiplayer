@@ -3,6 +3,7 @@ import {Peer} from 'peerjs';
 import event from '../event';
 import {set, setLookup} from '../state';
 import logger from '../logger';
+import initLookups from './lookups';
 
 const {log} = logger('multiplayer');
 
@@ -15,6 +16,19 @@ const sessionData = {
 	},
 	set id(value) {
 		document.getElementById('session-id').value = value;
+	},
+
+	/**
+	 * Status is one of: 'Not Connected', 'Connecting...', 'Connected', 'Error'
+	 */
+	_status: 'Not Connected',
+	get status() {
+		return this._status;
+	},
+	set status(value) {
+		this._status = value;
+		document.getElementById('connection-status').innerText = value;
+		refreshPassage();
 	}
 };
 const peerData = {
@@ -22,19 +36,7 @@ const peerData = {
 };
 
 export function init() {
-	setLookup('session.id', () => {
-		return sessionData.id;
-	});
-
-	setLookup('peer.id', () => {
-		return peerData.id;
-	});
-	setLookup('peer.isHost', () => {
-		return peerData.id === sessionData.id;
-	});
-	setLookup('peer.isGuest', () => {
-		return peerData.id !== sessionData.id;
-	});
+	initLookups(setLookup, {sessionData, peerData});
 
 	document.addEventListener('DOMContentLoaded', () => {
 		sessionData.id = '';
@@ -49,29 +51,25 @@ export function init() {
 				joinGame(sid);
 			} else {
 				log('Failed to join session due to missing session id');
-				setConnectionStatus('Error');
+				sessionData.status = 'Error';
 			}
 		});
 	});
 }
 
-function setConnectionStatus(status) {
-	document.getElementById('connection-status').innerHTML = status;
-}
-
 function hostGame() {
-	setConnectionStatus('Connecting...');
+	sessionData.status = 'Connecting...';
 	const peer = new Peer();
 
 	peer.on('error', err => {
 		log('peer connection error: host');
 		console.error(err);
-		setConnectionStatus('Error');
+		sessionData.status = 'Error';
 	});
 	peer.on('open', id => {
 		sessionData.id = id;
 		peerData.id = id;
-		setConnectionStatus('Connected');
+		sessionData.status = 'Connected';
 	});
 	peer.on('connection', conn => {
 		setupConnection(conn);
@@ -79,13 +77,13 @@ function hostGame() {
 }
 
 function joinGame(sessionID) {
-	setConnectionStatus('Connecting...');
+	sessionData.status = 'Connecting...';
 	const peer = new Peer();
 
 	peer.on('error', err => {
 		log('peer connection error: join');
 		console.error(err);
-		setConnectionStatus('Error');
+		sessionData.status = 'Error';
 	});
 	peer.on('open', id => {
 		peerData.id = id;
@@ -106,7 +104,7 @@ function setupConnection(connection) {
 	});
 
 	connection.on('open', () => {
-		setConnectionStatus('Connected');
+		sessionData.status = 'Connected';
 
 		// Send messages
 		event.on('state-change', ({name, previous, value, isFromPeers}) => {
@@ -121,8 +119,12 @@ function setupConnection(connection) {
 	connection.on('error', err => {
 		log('peer connection error: connection issue');
 		console.error(err);
-		setConnectionStatus('Error');
+		sessionData.status = 'Error';
 	});
+}
+
+function refreshPassage() {
+	event.emit('state-change', {name: 'multiplayer-state', isFromPeers: true});
 }
 
 function shouldSyncState(name) {
