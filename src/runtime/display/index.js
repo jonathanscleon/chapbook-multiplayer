@@ -98,13 +98,30 @@ const updateDom = coalesceCalls(function update(calls) {
 	});
 });
 
-const updateStory = coalesceCalls(function update(calls) {
+const updateStory = coalesceCalls(async function update(calls) {
 	if (calls.some(c => c[0])) {
 		const trail = get('trail');
 		const passage = passageNamed(trail[trail.length - 1]);
 
+		/*
+		Update the passage body, header and footer
+		*/
 		if (passage) {
 			transitions.none(bodyContentEl, render(passage.source));
+
+			['header', 'footer'].forEach(m => {
+				marginalEls[m].container.classList.remove('has-content');
+
+				['left', 'center', 'right'].forEach(part => {
+					const html = render(get(`config.${m}.${part}`));
+
+					if (html !== '') {
+						marginalEls[m].container.classList.add('has-content');
+					}
+
+					transitions.none(marginalEls[m][part], html);
+				});
+			});
 		}
 	}
 });
