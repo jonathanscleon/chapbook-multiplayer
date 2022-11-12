@@ -1,0 +1,35 @@
+:: Start
+--
+[align center]
+# Multiplayer
+
+
+[align left]
+This is a multiplayer game.
+
+To **host** a game, press the button labeled `host` below.
+
+To **join** a game, ask your game host for the `session id`, and paste it into the input below, then press `join`.
+
+{embed passage: 'Lobby'}
+
+[align center]
+**[[Begin->Coffee Shop]]**
+
+
+:: Lobby
+--
+
+[if multiplayer.session.isConnected && multiplayer.peer.isHost]
+**You are the host.** Your game's session ID is {multiplayer.session.id}.
+
+There are **{multiplayer.session.numConnections}** other players in the lobby.
+
+[if multiplayer.session.isConnected && multiplayer.peer.isGuest]
+**You have joined the game.**
+
+
+:: Coffee Shop
+--
+
+You are in a coffee shop

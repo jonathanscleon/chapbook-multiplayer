@@ -12,6 +12,9 @@ export default function init(setLookup, {peerData, sessionData}) {
 	setLookup('multiplayer.session.isConnected', () => {
 		return sessionData.status === 'Connected';
 	});
+	setLookup('multiplayer.session.numConnections', () => {
+		return sessionData.numConnections;
+	});
 
 	setLookup('multiplayer.peer.id', () => {
 		return peerData.id || '';

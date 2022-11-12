@@ -29,7 +29,19 @@ const sessionData = {
 		this._status = value;
 		document.getElementById('connection-status').innerText = value;
 		refreshPassage();
-	}
+	},
+	
+	/**
+	 * Number of active connections
+	 */
+	_numConnections: 0,
+	get numConnections() {
+		return this._numConnections;
+	},
+	set numConnections(value) {
+		this._numConnections = value;
+		refreshPassage();
+	},
 };
 const peerData = {
 	id: undefined
@@ -73,7 +85,9 @@ function hostGame() {
 	});
 	peer.on('connection', conn => {
 		setupConnection(conn);
+		sessionData.numConnections = Object.keys(peer.connections).length;
 	});
+
 }
 
 function joinGame(sessionID) {

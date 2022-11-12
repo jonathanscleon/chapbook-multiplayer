@@ -123,7 +123,7 @@ export function init() {
 		});
 	});
 
-	event.on('state-change', ({name, isFromPeers}) => isFromPeers ? updateStory(true) : updateDom(name === 'trail'));
+	event.on('state-change', ({isFromPeers}) => updateStory(isFromPeers));
 	event.on('state-change', ({name}) => updateDom(name === 'trail'));
 
 	/*
