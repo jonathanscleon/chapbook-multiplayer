@@ -1,0 +1,242 @@
+:: Start
+$gameStarted: false
+--
+[align center]
+# Animal Cafe
+
+
+[align left]
+This is a multiplayer game. You'll need at least one other player to play. 
+
+[align center]
+**[[Host a game->Lobby Hosting]]** | **[[Join a game->Lobby Joining 1]]**
+
+
+:: Lobby Joining 1
+config.header.right: '{multiplayer.session.status}'
+sessionId: ''
+--
+
+Ask your game's host for the session ID, then enter it below.
+
+Session ID:
+
+{text input for: 'sessionId'}
+
+[[Continue->Lobby Joining 2]] | {restart link, label: 'Go Back'}
+
+
+:: Lobby Joining 2
+--
+
+[JavaScript]
+if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
+  // Start joining the game, but wait for the cross-fade transition to finish
+  window.setTimeout(() => {
+    const sessionId = engine.state.get('sessionId')
+    engine.multiplayer.joinGame(sessionId)
+  }, 1000)
+}
+
+[if multiplayer.session.status == 'Connecting...']
+Joining game...
+
+[if multiplayer.session.status == 'Error']
+There was an error attempting to join the game with session id: {sessionId}
+
+[[Try again?->Lobby Joining 1]]
+
+[if multiplayer.session.isConnected && multiplayer.peer.isGuest && !$gameStarted]
+**You have joined the game!** Waiting for the host to begin...
+
+[if $gameStarted]
+{embed passage: 'Guest Start'}
+
+
+:: Lobby Hosting
+config.header.left: 'Hosting'
+config.header.right: '{multiplayer.session.status}'
+--
+
+[JavaScript]
+if(engine.state.get('multiplayer.session.status') === 'Not Connected') {
+  // Start hosting the game, but wait for the cross-fade transition to finish
+  window.setTimeout(() => {
+    engine.multiplayer.hostGame()
+  }, 1000)
+}
+
+[cont'd]
+
+[if multiplayer.session.status == 'Connecting...']
+Setting up game...
+
+[if multiplayer.session.isConnected && multiplayer.peer.isHost]
+**You are the host.** Your game's session ID is `{multiplayer.session.id}`.
+
+There are **{multiplayer.session.numConnections}** other players in the lobby.
+
+[if multiplayer.session.numConnections > 0]
+[[Start->Host Start]]
+
+[cont'd]
+{restart link, label: 'Go Back?'} (this will abandon your current game)
+
+
+:: Host Start
+$gameStarted: true
+$avaliablePets.wingdings: true
+$avaliablePets.baskerville: true
+$avaliablePets.hershel: true
+$avaliablePets.ada: true
+--
+[JavaScript]
+window.setTimeout(() => {
+  engine.state.set('trail', [...engine.state.get('trail'), 'Animal Cafe'])
+}, 1000)
+
+
+:: Guest Start
+--
+[JavaScript]
+// Run this code, but ONLY ONCE!
+// TODO: make this better somehow
+if(!window.guestStartLock) {
+  window.guestStartLock = true
+  window.setTimeout(() => {
+    engine.state.set('trail', [...engine.state.get('trail'), 'Animal Cafe'])
+  }, 1000)
+}
+
+
+:: Animal Cafe
+yourPet: 'none'
+--
+[if passage.visits == 1]
+{embed passage: 'Animal Cafe Intro'}
+
+[cont'd]
+
+A charming, cozy cafe filled with the aroma of freshly brewed coffee.
+Near the front, a case full of delicous looking cakes and pastries catches your eye.
+
+But first, you decide to pick an animal companion.
+
+You can see a [[curious cat->Baskerville the Cat]] eyeing you from atop a tall cat tree,
+and [[playful cat->Wingdings the Cat]] pawing at a mouse toy on a string.
+In the corner, an [[excited bunny->Ada the Bunny]] bounces along the perimeter of a large playpen,
+and a [[relaxed bunny->Hershel the Bunny]] lays in the sunbeams.
+
+
+:: Animal Cafe Intro
+--
+
+There's a cute new Animal Cafe in town. You decide to pay it a visit.
+
+
+
+:: Hershel the Bunny
+--
+# Hershel the Bunny
+
+A fluffy tricolor Holland Lop. He flops lazily next to the side of the rabbit hutch.
+Hershel reminds you of a plush toy that's come to life. You've never seen an animal so relaxed.
+
+[if !$avaliablePets.hershel]
+Hershel isn't available anymore. He must have caught someone else's eye already.
+> {back link}
+
+[else]
+> [[Choose Hershel]]
+> {back link, label: 'Think it over some more'}
+
+
+:: Choose Hershel
+$avaliablePets.hershel: false
+yourPet: 'Hershel'
+--
+You pick Hershel.
+
+{embed passage: 'Animal Cafe 2'}
+
+
+:: Ada the Bunny
+--
+# Ada the Bunny
+
+A fuzzy brown mini rex. She zooms excitedly around the pen.
+Ada looks like a bunny straight from a picture book.
+You think she might be plotting to steal vegetables from Mr McGregor's garden.
+
+[if !$avaliablePets.ada]
+Someone else picked Ada already! Guess you'll have to pick a different companion.
+> {back link}
+
+[else]
+> [[Choose Ada]]
+> {back link, label: 'Think it over some more'}
+
+
+:: Choose Ada
+$avaliablePets.ada: false
+yourPet: 'Ada'
+--
+You pick Ada.
+
+{embed passage: 'Animal Cafe 2'}
+
+
+:: Wingdings the Cat
+--
+# Windgings the Cat
+
+Wingdings notices you approach and rolls over to expose his soft fluffy belly.
+Is it a trap? Only one way to find out.
+
+[if !$avaliablePets.wingdings]
+Oh! It looks like someone else already decided to play with Wingdings. Darn.
+> {back link}
+
+[else]
+> [[Choose Wingdings]]
+> {back link, label: 'Think it over some more'}
+
+
+:: Choose Wingdings
+$avaliablePets.windgings: false
+yourPet: 'Windgings'
+--
+You pick Wingdings.
+
+{embed passage: 'Animal Cafe 2'}
+
+
+:: Baskerville the Cat
+--
+# Baskerville the Cat
+
+A stately and dignified black and white cat.
+Baskerville sits up tall with his tail curled around his body.
+He looks like he wants you to pet him, but is politely waiting his turn.
+
+[if !$avaliablePets.baskerville]
+Hang on–someone else picked Baskerville already. Maybe next time.
+> {back link}
+
+[else]
+> [[Choose Baskerville]]
+> {back link, label: 'Think it over some more'}
+
+
+:: Choose Baskerville
+$avaliablePets.baskerville: false
+yourPet: 'Baskerville'
+--
+You pick Baskerville.
+
+{embed passage: 'Animal Cafe 2'}
+
+
+:: Animal Cafe 2
+--
+Waiting for other players to pick an animal.
