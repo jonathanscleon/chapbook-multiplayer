@@ -21,7 +21,7 @@ Session ID:
 
 {text input for: 'sessionId'}
 
-[[Continue->Lobby Joining 2]] | [[Go back->Start]]
+[[Continue->Lobby Joining 2]] | {restart link, label: 'Go Back'}
 
 
 :: Lobby Joining 2
@@ -76,6 +76,9 @@ There are **{multiplayer.session.numConnections}** other players in the lobby.
 
 [if multiplayer.session.numConnections > 0]
 [[Start->Host Start]]
+
+[cont'd]
+{restart link, label: 'Go Back?'} (this will abandon your current game)
 
 
 :: Host Start
