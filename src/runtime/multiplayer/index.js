@@ -85,6 +85,20 @@ export function hostGame() {
 	});
 	peer.on('connection', conn => {
 		setupConnection(conn);
+		// Re-broadcast messages to all other peers
+		conn.on('data', data => {
+			for(const peerId in peer.connections) {
+				if(peerId !== conn.connectionId) {
+					const otherConnection = peer.connections[peerId][0];
+					
+					log('Broadcasting TO another client...');
+					log(
+						`name: ${data.name}, previous: ${data.previous}, value: ${data.value}`
+					);
+					otherConnection.send(data);
+				}
+			}
+		});
 		sessionData.numConnections = Object.keys(peer.connections).length;
 	});
 
