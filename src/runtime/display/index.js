@@ -107,7 +107,7 @@ const updateStory = coalesceCalls(async function update(calls) {
 		Update the passage body, header and footer
 		*/
 		if (passage) {
-			transitions.none(bodyContentEl, render(passage.source));
+			transitions.none(bodyContentEl, render(passage.source, true));
 
 			['header', 'footer'].forEach(m => {
 				marginalEls[m].container.classList.remove('has-content');
