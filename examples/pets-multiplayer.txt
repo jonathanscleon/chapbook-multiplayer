@@ -89,10 +89,14 @@ $avaliablePets.wingdings: true
 $avaliablePets.baskerville: true
 $avaliablePets.hershel: true
 $avaliablePets.ada: true
+$chosenPets.wingdings: ''
+$chosenPets.baskerville: ''
+$chosenPets.hershel: ''
+$chosenPets.ada: ''
 --
 [JavaScript]
 window.setTimeout(() => {
-  engine.state.set('trail', [...engine.state.get('trail'), 'Animal Cafe'])
+  go('Animal Cafe')
 }, 1000)
 
 
@@ -104,7 +108,7 @@ window.setTimeout(() => {
 if(!window.guestStartLock) {
   window.guestStartLock = true
   window.setTimeout(() => {
-    engine.state.set('trail', [...engine.state.get('trail'), 'Animal Cafe'])
+    go('Animal Cafe')
   }, 1000)
 }
 
@@ -153,9 +157,9 @@ Hershel isn't available anymore. He must have caught someone else's eye already.
 
 :: Choose Hershel
 $avaliablePets.hershel: false
+$chosenPets.hershel: multiplayer.peer.id
 yourPet: 'Hershel'
 --
-You pick Hershel.
 
 {embed passage: 'Animal Cafe 2'}
 
@@ -179,9 +183,9 @@ Someone else picked Ada already! Guess you'll have to pick a different companion
 
 :: Choose Ada
 $avaliablePets.ada: false
+$chosenPets.ada: multiplayer.peer.id
 yourPet: 'Ada'
 --
-You pick Ada.
 
 {embed passage: 'Animal Cafe 2'}
 
@@ -204,9 +208,9 @@ Oh! It looks like someone else already decided to play with Wingdings. Darn.
 
 :: Choose Wingdings
 $avaliablePets.wingdings: false
+$chosenPets.wingdings: multiplayer.peer.id
 yourPet: 'Wingdings'
 --
-You pick Wingdings.
 
 {embed passage: 'Animal Cafe 2'}
 
@@ -230,13 +234,38 @@ Hang on–someone else picked Baskerville already. Maybe next time.
 
 :: Choose Baskerville
 $avaliablePets.baskerville: false
+$chosenPets.baskerville: multiplayer.peer.id
 yourPet: 'Baskerville'
 --
-You pick Baskerville.
 
 {embed passage: 'Animal Cafe 2'}
 
 
 :: Animal Cafe 2
 --
+
+You pick {yourPet}, and head over to the seating area.
+
+[JavaScript]
+const playerId = engine.state.get('multiplayer.peer.id')
+const otherPets = Object.entries(engine.state.get('$chosenPets'))
+  .filter(([pet,id]) => id !== '')
+  .filter(([pet,id]) => id !== playerId)
+  .map(([pet,id]) => pet)
+
+const petNames = {
+  ada: 'Ada the bunny',
+  baskerville: 'Baskerville the cat',
+  hershel: 'Hershel the bunny',
+  wingdings: 'Wingdings the cat'
+}
+const listOfPets = otherPets
+  .map((pet) => petNames[pet])
+  .join(', ')
+
+if(otherPets.length > 0) {
+  write(listOfPets + (otherPets.length > 1 ? ' are here too.' : ' is here too.'))
+}
+
+[cont'd]
 Waiting for other players to pick an animal.
