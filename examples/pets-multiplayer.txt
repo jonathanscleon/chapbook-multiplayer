@@ -188,7 +188,7 @@ You pick Ada.
 
 :: Wingdings the Cat
 --
-# Windgings the Cat
+# Wingdings the Cat
 
 Wingdings notices you approach and rolls over to expose his soft fluffy belly.
 Is it a trap? Only one way to find out.
@@ -203,8 +203,8 @@ Oh! It looks like someone else already decided to play with Wingdings. Darn.
 
 
 :: Choose Wingdings
-$avaliablePets.windgings: false
-yourPet: 'Windgings'
+$avaliablePets.wingdings: false
+yourPet: 'Wingdings'
 --
 You pick Wingdings.
 
